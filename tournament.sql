@@ -1,3 +1,4 @@
+
 -- Table definitions for the tournament project.
 --
 -- Put your SQL 'create table' statements in this file; also 'create view'
@@ -22,10 +23,13 @@ CREATE TABLE matches(player_won int,
 
 --A view is a virtual table based on the result-set of an SQL statement.
 -- A view of players standing containing id ,name ,no of matches won , toatal matches played column are listed 
-CREATE OR REPLACE VIEW standing AS
+CREATE OR REPLACE VIEW standings AS
 	SELECT players.id, players.name,
 	sum(CASE WHEN players.id = matches.player_won THEN 1 ELSE 0 END) as won,
 	sum(CASE WHEN players.id = matches.player_won OR players.id = matches.player_lost THEN 1 ELSE 0 END ) as match_play
-	FROM players, matches
+	FROM players
+	LEFT JOIN matches
+	ON players.id = matches.player_won OR players.id = matches.player_lost
 	GROUP BY players.id
-	ORDER BY won DESC;
+	ORDER BY won DESC,
+		match_play ASC;

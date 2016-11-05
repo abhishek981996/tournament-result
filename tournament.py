@@ -84,7 +84,7 @@ def playerStandings():
     """
     DB = psycopg2.connect("dbname=tournament")
     c = DB.cursor()
-    c.execute("SELECT * FROM STANDINGS")
+    c.execute("SELECT * FROM standings")
     standing_player = []
     #empty list to store the values from the table as a tuple 
     standing_player = c.fetchall()
@@ -132,7 +132,7 @@ def swissPairings():
     #Inorder to pair list of player standing has to be obtained 
     #below command selects id, name from STANDINGS table created in tournament.sql file
     #This table is already sorted in wins and equal wins context 
-    c.execute("SELECT id,name from STANDINGS ORDER BY STANDINGS.wins  DESC, STANDINGS.id  ASC")
+    c.execute("SELECT id,name from STANDINGS ORDER BY STANDINGS.won  DESC, STANDINGS.id  ASC")
     pair = c.fetchall()
     swiss_pair = []
     

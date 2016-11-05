@@ -10,8 +10,8 @@ CREATE TABLE players (name Text,
 			id serial primary key, 
 			UNIQUE(id)
 			);
-''' Table players contains column name (text) ,id (serial). id is use as a primary key inorder to establish foreign key 
-relationship'''			
+-- Table players contains column name (text) ,id (serial). id is use as a primary key inorder to establish foreign key 
+--relationship			
 			
 CREATE TABLE matches(player_won int,
 			player_lost int,
@@ -20,8 +20,8 @@ CREATE TABLE matches(player_won int,
 			FOREIGN KEY(player_lost) REFERENCES players(id)
 			);
 
-'''a view is a virtual table based on the result-set of an SQL statement.
- A view of players standing containing id ,name ,no of matches won , toatal matches played column are listed '''
+--A view is a virtual table based on the result-set of an SQL statement.
+-- A view of players standing containing id ,name ,no of matches won , toatal matches played column are listed 
 CREATE OR REPLACE VIEW standing AS
 	SELECT players.id, players.name,
 	sum(CASE WHEN players.id = matches.player_won THEN 1 ELSE 0 END) as won,

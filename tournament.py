@@ -1,3 +1,5 @@
+#created by Abhishek Tiwari
+#on date 4-11-2016
 #!/usr/bin/env python
 # 
 # tournament.py -- implementation of a Swiss-system tournament
@@ -16,7 +18,9 @@ def deleteMatches():
     DB = psycopg2.connect("dbname=tournament")
     c = DB.cursor()
     c.execute("DELETE FROM matches")
+    #deleting matches from database using delete command
     DB.commit()
+    #commiting the changes inorder to save the logs
     DB.close()
 
 def deletePlayers():
@@ -25,6 +29,7 @@ def deletePlayers():
     DB = psycopg2.connect("dbname=tournament")
     c = DB.cursor()
     c.execute("DELETE FROM players")
+    #similar to delete matches fuunction
     DB.commit()
     DB.close()
 
@@ -34,10 +39,14 @@ def countPlayers():
     DB = psycopg2.connect("dbname=tournament")
     c = DB.cursor()
     c.execute("SELECT COUNT(*) as num FROM players")
+    #using num as count row 
     DB.commit()
+    #now the obtain row has to be returned this can be done by calling c.fetchall() constructor
+    #c.fetchall returns a list of tuple containing each row simultaneously 
     for row in c.fetchall():
         p = (row[0])
     DB.close()
+    #taking only the count value in variable p as count column is in row 1.then returning the value of variable p
     return p
 
 
@@ -53,8 +62,11 @@ def registerPlayer(name):
     DB = psycopg2.connect("dbname=tournament")
     c = DB.cursor()
     c.execute("INSERT INTO players VALUES (%s)",(name,))
+    #inserting the name using a tuple .
+    #As it is a single value tuple comma have to be used to differentiate it from a variable
     DB.commit()
     DB.close()
+    #closing the connection using close constructor
 
 
 def playerStandings():
@@ -74,9 +86,8 @@ def playerStandings():
     c = DB.cursor()
     c.execute("SELECT * FROM STANDINGS")
     standing_player = []
+    #empty list to store the values from the table as a tuple 
     standing_player = c.fetchall()
-   
-    
     DB.close()
     return standing_player
 
@@ -89,9 +100,12 @@ def reportMatch(winner, loser):
     """
     DB = psycopg2.connect("dbname=tournament")
     c = DB.cursor()
+    
+    #taking out the name of the given id from players table
     win = c.execute("SELECT name FROM players WHERE players.id = (%s)",(winner,))
     loss = c.execute("SELECT name FROM players WHERE players.id = (%s)",(loser,))
-
+    
+    #reporting the win and loss of match by inserting name (which was obtain from above) and id of players in matches table
     c.execute("INSERT INTO matches VALUES (%s,%s)",(winner,loser))
     DB.commit()
     DB.close()
@@ -115,13 +129,19 @@ def swissPairings():
     """
     DB = psycopg2.connect("dbname=tournament")
     c = DB.cursor()
-    
+    #Inorder to pair list of player standing has to be obtained 
+    #below command selects id, name from STANDINGS table created in tournament.sql file
+    #This table is already sorted in wins and equal wins context 
     c.execute("SELECT id,name from STANDINGS ORDER BY STANDINGS.wins  DESC, STANDINGS.id  ASC")
     pair = c.fetchall()
     swiss_pair = []
+    
+    #the obtained list of pair varaible contain a list of tuple but in a format of [(id,name),(id,name)....]
+ 
     for i in range(0,len(pair)):
         if i%2 != 0:
             swiss_pair.append(pair[i-1] + pair[i])
+    #the above code is a lot easy .. try to understand by urself .. It would be fu after knowing it :-)
     DB.close()
     return swiss_pair
 
